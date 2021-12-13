@@ -44,7 +44,7 @@ router.get('/:id',async(req,res,next)=>{
 })
 
 
-//Actualizar un chat (añadir un post)
+//Actualizar un chat (añadir un post) (en el body mandar un campo post: "algo")
 router.put('/add/:id',async(req,res,next)=>{
     const {id}=req.params;
     try{

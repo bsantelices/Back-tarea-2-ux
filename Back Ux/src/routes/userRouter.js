@@ -73,7 +73,13 @@ router.delete('/:userId',async(req,res,next)=>{
 
 
 
-// Tranferencia
+// Tranferencia (en la ruta se manda el id del emisor, 
+//     en el body van estos 3 campos:
+//                          {
+//    "id": "61b6884c39b4056ae69e242c",
+//    "type": "clp",
+//    "amount": 1000
+//         )
 router.put('/tranfer/:id',async(req,res,next)=>{
     const {id}=req.params;
     try{

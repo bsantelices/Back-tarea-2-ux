@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const {getAllUsers,createUser,getUser, updateUserById, deleteUserById, transfer} = require('../controllers/userController');
+const {getAllUsers,createUser,getUser, updateUserById, deleteUserById, addAccount, makeTransfer} = require('../controllers/userController');
 
 // Obtener todos los usuarios
 router.get('/',async(req,res,next)=>{
@@ -57,6 +57,21 @@ router.put('/:userId',async(req,res,next)=>{
     }
 })
 
+
+//Añadir una cuenta al usuario (en el body mandar el id de la cuenta)
+router.put('/addAccount/:userId',async(req,res,next)=>{
+    const {userId} = req.params;
+    try{
+        const usuario = await addAccount(userId,req.body);
+        res.status(200).json({
+            data:usuario,
+            menssage:`Usuario actualizado: ${usuario.name}`
+        })
+    }catch(err){
+        next(err);
+    }
+})
+
 //Eliminar un usuario
 router.delete('/:userId',async(req,res,next)=>{
     const {userId}=req.params;
@@ -64,7 +79,7 @@ router.delete('/:userId',async(req,res,next)=>{
         const usuario = await deleteUserById(userId);
         res.status(200).json({
             data:usuario,
-            menssage:`Usuario eliminado :${usuario.item}`
+            menssage:`Usuario eliminado :${usuario.name}`
         })
     }catch(err){
         next(err);
@@ -73,20 +88,20 @@ router.delete('/:userId',async(req,res,next)=>{
 
 
 
-// Tranferencia (en la ruta se manda el id del emisor, 
+// Tranferencia (en la ruta se manda el id de la cuenta de origen, 
 //     en el body van estos 3 campos:
-//                          {
-//    "id": "61b6884c39b4056ae69e242c",
+//                         
+//    "id": "61b6884c39b4056ae69e242c", (de la cuenta de destino)
 //    "type": "clp",
 //    "amount": 1000
 //         )
 router.put('/tranfer/:id',async(req,res,next)=>{
     const {id}=req.params;
     try{
-        const userAux = await transfer(id,req.body);
+        const accountAux = await makeTransfer(id,req.body);
         res.status(200).json({
-            data: userAux,
-            message: `Se a realizado la transferencia por parte de : ${userAux.name}`
+            data: accountAux,
+            message: `Se a realizado la transferencia por parte de : ${accountAux.nAccount}`
         })
     }catch(err){
         next(err);

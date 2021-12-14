@@ -11,21 +11,17 @@ const userSchema = new Schema({
         type: String,
         required: true
     },
-    username: {
+    rut: {
         type: String,
         required: true,
         unique: true,
     },
-    clp_balance: {
-        type: Number,
-        defaut: 0,
-    },
-    cabildo_balance: {
-        type: Number,
-        defaut: 0,
+    password:{
+        type: String,
+        required: true,
     },
     listAccounts:{
-        type: [Number],
+        type: [String],
         default: [],
     },
 });

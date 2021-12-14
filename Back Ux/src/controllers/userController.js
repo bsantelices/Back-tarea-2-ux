@@ -1,4 +1,5 @@
 const user = require('../models/User');
+const {transfer, addUser} = require('../controllers/accountController');
 
 
 const getAllUsers = async() =>{
@@ -10,10 +11,9 @@ const createUser= async (body) =>{
     const newUser = new user({
         name:body.name,
         lastname:body.lastname,      
-        username:body.username,
-        clp_balance:body.clp_balance || 0,
-        cabildo_balance:body.cavildo_balance || 0,
-        listAccounts:body.listAccounts,
+        rut:body.rut,
+        password:body.password,
+        listAccounts:body.listAccounts || [],
     });
     const storeInMongoDB = await newUser.save();
     return storeInMongoDB;
@@ -38,30 +38,20 @@ const deleteUserById = async(id)=>{
 }
 
 
+const addAccount = async(id, body)=>{
+    const userAux = await getUser(id);
+    userAux.listAccounts.push(body.account);
+    const accountAux = await addUser(id, body.account);// Se añade a la cuenta
+    await userAux.save();
+    return userAux;
+}
 
-const transfer = async(id, body)=>{
-    const user1 = await getUser(id);
-    const user2 = await getUser(body.id);
-    if(body.type == 'clp'){
-        if(user1.clp_balance >= body.amount){
-            user2.clp_balance =  user2.clp_balance + body.amount;//Se suma al destinatario
-            user1.clp_balance =  user1.clp_balance - body.amount;//Se resta al emisor
-        }
-    }  
-    if(body.type == 'cabildo'){
-        if(user1.cabildo_balance >= body.amount){
-            user2.cabildo_balance =  user2.cabildo_balance + body.amount;//Se suma al destinatario
-            user1.cabildo_balance =  user1.cabildo_balance - body.amount;//Se resta al emisor
-        }
-    }
-    else{
-        //error
-    }
-    await user1.save();
-    await user2.save();
-    return user1;
+
+const makeTransfer = async(id, body)=>{
+    const account = await transfer(id, body);
+    return account;
 }
 
 
 
-module.exports = {getAllUsers,createUser,getUser, updateUserById, deleteUserById, transfer}
+module.exports = {getAllUsers,createUser,getUser, updateUserById, deleteUserById, addAccount, makeTransfer}

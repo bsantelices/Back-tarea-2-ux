@@ -2,7 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 require("dotenv").config();
 const userRouter = require("./src/routes/userRouter");
-const chatRouter = require("./src/routes/chatRouter");
+const accountRouter = require("./src/routes/accountRouter");
 
 // settings
 const app = express();
@@ -11,7 +11,7 @@ const port = process.env.PORT || 9000;
 // middlewares
 app.use(express.json());
 app.use("/api/users", userRouter);
-app.use("/api/chat", chatRouter);
+app.use("/api/accounts", accountRouter);
 
 // routes
 app.get("/", (req, res) => {
